@@ -1,7 +1,7 @@
 <html>
   <head>
     <!-- Do _not_  rely on this URL in production. Use only during development.  -->
-    <script src="https://netflix.github.io/falcor/build/falcor.browser.js"></script>
+    <script src="falcor.browser.js"></script>
     <script>
     'use strict'
       //var model = new falcor.Model({source: new falcor.HttpDataSource('/model.json') });
@@ -13,10 +13,12 @@
       class CustomSource extends falcor.HttpDataSource {
         // custom source to get my requests through AWS API Gateway
         onBeforeRequest (config) {
+          console.log('a', config)
           if(config.method === 'GET'){
             config.url = config.url.replace(/"/g, "'")
             let splitUrl = config.url.split('?')
             if (splitUrl[1]) {
+              console.log('test',splitUrl[1])
               config.url = splitUrl[0] + '?' + encodeURI(splitUrl[1])
             }
           } else if (config.method === 'POST') {
@@ -49,23 +51,27 @@
         return model
       })()
 
-      falcorGraph.get(
-        ['usersByFbId', '10153295507594468', ['fbId', 'first_name', 'last_name', 'profilePic', 'id']]
-      ).then(data => {
-        console.log('user 10153295507594468',data)
-      })
-
+      //this key should be valid but is requested as 10204129826629812
       falcorGraph.get(
         ['usersByFbId', '10204129826629813', ['fbId', 'first_name', 'last_name', 'profilePic', 'id']]
       ).then(data => {
         console.log('user 10204129826629813',data)
       })
+      
+      // falcorGraph.get(
+      //   ['usersByFbId', 'invalid2', ['fbId', 'first_name', 'last_name', 'profilePic', 'id']]
+      // ).then(data => {
+      //   console.log('user 10204058935978650',data)
+      // })
+  
+      // falcorGraph.get(
+      //   ['usersByFbId', 'invalidKey', ['fbId', 'first_name', 'last_name', 'profilePic', 'id']]
+      // ).then(data => {
+      //   console.log('user invalidKey',data)
+      // })
 
-      falcorGraph.get(
-        ['usersByFbId', '10204058935978650', ['fbId', 'first_name', 'last_name', 'profilePic', 'id']]
-      ).then(data => {
-        console.log('user 10204058935978650',data)
-      })
+
+     
     </script>
   </head>
   <body>
